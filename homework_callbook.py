@@ -21,6 +21,7 @@ from csv import DictReader, DictWriter
 from os.path import exists
 
 file_name = 'phone.csv'
+new_file_name = 'new_phone.csv'
 
 
 def get_info():
@@ -60,6 +61,25 @@ def write_file(file_name, lst):
         f_w.writeheader()
         f_w.writerows(res)
 
+def row_search(file_name):
+    last_name = input('Введите фамилию: ')
+    res = read_file(file_name)
+    finded_rows = []
+    for elem in res:
+        if elem['фамилия'] == last_name:
+            finded_rows.append(elem)
+    if len(finded_rows) == 0:
+        print('Введённая фамилия не найдена')
+    else:
+        print(*finded_rows, sep='\n')
+
+def copy_row(file_name, new_file_name):
+    copy_data_from = read_file(file_name)
+    line_number = int(input('Введите номер строки, которую Вы хотите скопировать: '))
+    obj = copy_data_from[line_number - 1]
+    res = [obj['имя'], obj['фамилия'], obj['телефон']]
+    write_file(new_file_name, res)
+
 
 def main():
     while True:
@@ -75,6 +95,15 @@ def main():
                 print('Файл отсутствует, создайте его')
                 continue
             print(*read_file(file_name), sep='\n')
+        elif command == 'f':
+            if not exists(file_name):
+                print('Файл отсутствует, создайте его')
+                continue
+            row_search(file_name)
+        elif command == 'c':
+            if not exists(new_file_name):
+                create_file(new_file_name)
+            copy_row(file_name, new_file_name)
 
 
 main()
